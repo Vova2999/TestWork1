@@ -30,7 +30,7 @@ template <typename TValue>
 void AssertGetValue(ComplexMap<TValue>& complexMap, int key, TValue expectedValue)
 {
 	TValue value = complexMap.GetValue(key);
-	
+
 	cout << "Key: " << key << " Value: " << value << endl;
 	cout << "Key: " << key << " Value: " << expectedValue << " (test)" << endl << endl;
 
@@ -43,7 +43,7 @@ void AssertGetArray(ComplexMap<TValue>& complexMap, int key, TValue* expectedArr
 {
 	int size;
 	TValue* array = complexMap.GetArray(key, &size);
-	
+
 	cout << "Key: " << key << " Size: " << size << " Values: " << ArrayToString(array, size) << endl;
 	cout << "Key: " << key << " Size: " << expectedSize << " Values: " << ArrayToString(expectedArray, expectedSize) << " (test)" << endl << endl;
 
@@ -55,7 +55,7 @@ template <typename TValue>
 void AssertGetString(ComplexMap<TValue>& complexMap, int key, char* expectedLine)
 {
 	char* line = complexMap.GetString(key);
-	
+
 	cout << "Key: " << key << " Line: " << line << endl;
 	cout << "Key: " << key << " Line: " << expectedLine << " (test)" << endl << endl;
 
@@ -73,7 +73,7 @@ void AssertTryGetValue(ComplexMap<TValue>& complexMap, int key, bool mustBeFound
 		cout << "Key: " << key << " Value: " << value << endl;
 	else
 		cout << "Key: " << key << " Value: " << "none" << endl;
-	
+
 	if (mustBeFound)
 		cout << "Key: " << key << " Value: " << expectedValue << " (test)" << endl << endl;
 	else
@@ -95,12 +95,12 @@ void AssertTryGetArray(ComplexMap<TValue>& complexMap, int key, bool mustBeFound
 	int size;
 	TValue* array;
 	bool isFound = complexMap.TryGetArray(key, &array, &size);
-	
+
 	if (isFound)
 		cout << "Key: " << key << " Size: " << size << " Values: " << ArrayToString(array, size) << endl;
 	else
 		cout << "Key: " << key << " Size: " << "none" << " Values: " << "none" << endl;
-	
+
 	if (mustBeFound)
 		cout << "Key: " << key << " Size: " << expectedSize << " Values: " << ArrayToString(expectedArray, expectedSize) << " (test)" << endl << endl;
 	else
@@ -121,7 +121,7 @@ void AssertTryGetString(ComplexMap<TValue>& complexMap, int key, bool mustBeFoun
 {
 	char* line;
 	bool isFound = complexMap.TryGetString(key, &line);
-	
+
 	if (isFound)
 		cout << "Key: " << key << " Line: " << line << endl;
 	else
@@ -184,7 +184,7 @@ void SimpleTest()
 
 	if (complexMap.GetSize() != 6)
 		throw "ComplexMap size not 6";
-	
+
 	complexMap.RemoveAll();
 	if (complexMap.GetSize() != 0)
 		throw "ComplexMap size not 0";
@@ -194,7 +194,7 @@ void ExceptionOnGetMissingKeys()
 {
 	int size;
 	ComplexMap<int> complexMap;
-	
+
 	AssertConstCharException("Check exception on GetValue by missing key", [&]() { complexMap.GetValue(16); });
 	AssertConstCharException("Check exception on GetArray by missing key", [&]() { complexMap.GetArray(16, &size); });
 	AssertConstCharException("Check exception on GetString by missing key", [&]() { complexMap.GetString(16); });
@@ -239,7 +239,7 @@ void ExceptionOnGetInvalidType()
 {
 	int size;
 	ComplexMap<int> complexMap;
-	
+
 	complexMap.AddValue(16, 222);
 	AssertConstCharException("Check exception on GetArray instead of GetValue", [&]() { complexMap.GetArray(16, &size); });
 	AssertConstCharException("Check exception on GetString instead of GetValue", [&]() { complexMap.GetString(16); });
@@ -283,7 +283,7 @@ void TryGetMethods()
 void RemoveTempMemory()
 {
 	ComplexMap<int> complexMap;
-	
+
 	int* array1 = new int[4]{ 4, 5, 6, 7 };
 	complexMap.AddArray(142, array1, 4);
 	delete[] array1;

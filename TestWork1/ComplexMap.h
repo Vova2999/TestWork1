@@ -19,7 +19,7 @@ class ComplexMap
 	{
 	public:
 		TValue Value;
-		
+
 		SingleValueType(TValue value)
 			: Value{value}
 		{ }
@@ -33,14 +33,14 @@ class ComplexMap
 	public:
 		TValue* Values;
 		int Size;
-		
+
 		ArrayValueType(TValue* values, int size)
 			: Size{ size }
 		{
 			Values = new TValue[size];
 			memcpy_s(Values, size * sizeof(TValue), values, size * sizeof(TValue));
 		}
-		
+
 		virtual ~ArrayValueType()
 		{
 			delete[] Values;
@@ -70,19 +70,21 @@ class ComplexMap
 	void AddValueType(int key, ValueType* valueType)
 	{
 		pair<map<int, ValueType*>::iterator, bool> inserted = valuesMap.insert(pair<int, ValueType*>(key, valueType));
-		if (inserted.second == false) {
-			delete valueType;
-			throw "Key already exists";
-		}
+		if (inserted.second)
+			return;
+
+		delete valueType;
+		throw "Key already exists";
 	}
 
 	void AddValueTypeOrReplace(int key, ValueType* valueType)
 	{
 		pair<map<int, ValueType*>::iterator, bool> inserted = valuesMap.insert(pair<int, ValueType*>(key, valueType));
-		if (inserted.second == false) {
-			delete inserted.first->second;
-			inserted.first->second = valueType;
-		}
+		if (inserted.second)
+			return;
+
+		delete inserted.first->second;
+		inserted.first->second = valueType;
 	}
 
 	template<typename TValueType>
@@ -136,7 +138,7 @@ public:
 	{
 		AddValueType(key, new StringValueType(line));
 	}
-	
+
 	void AddValueOrReplace(int key, TValue value)
 	{
 		AddValueTypeOrReplace(key, new SingleValueType(value));
@@ -149,7 +151,7 @@ public:
 	{
 		AddValueTypeOrReplace(key, new StringValueType(line));
 	}
-	
+
 	TValue GetValue(int key)
 	{
 		SingleValueType* singleValue = GetValueType<SingleValueType>(key);
@@ -181,7 +183,7 @@ public:
 		ArrayValueType* arrayValue = GetValueTypeOrNullptr<ArrayValueType>(key);
 		if (arrayValue == nullptr)
 			return false;
-		
+
 		*values = arrayValue->Values;
 		*size = arrayValue->Size;
 		return true;
@@ -191,7 +193,7 @@ public:
 		StringValueType* stringValue = GetValueTypeOrNullptr<StringValueType>(key);
 		if (stringValue == nullptr)
 			return false;
-		
+
 		*line = stringValue->Line;
 		return true;
 	}
