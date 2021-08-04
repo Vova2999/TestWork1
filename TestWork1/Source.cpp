@@ -162,6 +162,9 @@ void SimpleTest()
 {
 	ComplexMap<int> complexMap;
 
+	if (complexMap.GetSize() != 0)
+		throw "ComplexMap size not 0";
+
 	complexMap.AddValue(16, 222);
 	AssertGetValue(complexMap, 16, 222);
 	complexMap.AddValue(63, 333);
@@ -178,6 +181,13 @@ void SimpleTest()
 	AssertGetString(complexMap, 993, "123123");
 	complexMap.AddString(995, "321321");
 	AssertGetString(complexMap, 995, "321321");
+
+	if (complexMap.GetSize() != 6)
+		throw "ComplexMap size not 6";
+	
+	complexMap.RemoveAll();
+	if (complexMap.GetSize() != 0)
+		throw "ComplexMap size not 0";
 }
 
 void ExceptionOnGetMissingKeys()
@@ -254,7 +264,6 @@ void TryGetMethods()
 	complexMap.AddArray(142, array1, sizeof(array1) / sizeof(int));
 	complexMap.AddString(993, "123123");
 
-	
 	AssertTryGetValue(complexMap, 16, true, 222);
 	AssertTryGetValue(complexMap, 22, false, 0);
 	AssertTryGetValue(complexMap, 142, false, 0);
@@ -271,6 +280,24 @@ void TryGetMethods()
 	AssertTryGetString(complexMap, 111, false, "");
 }
 
+void RemoveTempMemory()
+{
+	ComplexMap<int> complexMap;
+	
+	int* array1 = new int[4]{ 4, 5, 6, 7 };
+	complexMap.AddArray(142, array1, 4);
+	delete[] array1;
+	int* array1ForTest = new int[4]{ 4, 5, 6, 7 };
+	AssertGetArray(complexMap, 142, array1ForTest, 4);
+	AssertTryGetArray(complexMap, 142, true, array1ForTest, 4);
+
+	char* line1 = new char[7]{ '1', '2', '3', '1', '2', '3', 0 };
+	complexMap.AddString(993, line1);
+	delete[] line1;
+	AssertGetString(complexMap, 993, "123123");
+	AssertTryGetString(complexMap, 993, true, "123123");
+}
+
 void main()
 {
 	SimpleTest();
@@ -279,6 +306,7 @@ void main()
 	ReplaceOnAddingDuplicateValue();
 	ExceptionOnGetInvalidType();
 	TryGetMethods();
+	RemoveTempMemory();
 
 	system("pause>>void");
 }

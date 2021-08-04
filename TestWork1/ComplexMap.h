@@ -67,8 +67,7 @@ class ComplexMap
 
 	map<int, ValueType*> valuesMap;
 
-	template<typename TValueType>
-	void AddValueType(int key, TValueType* valueType)
+	void AddValueType(int key, ValueType* valueType)
 	{
 		pair<map<int, ValueType*>::iterator, bool> inserted = valuesMap.insert(pair<int, ValueType*>(key, valueType));
 		if (inserted.second == false) {
@@ -77,8 +76,7 @@ class ComplexMap
 		}
 	}
 
-	template<typename TValueType>
-	void AddValueTypeOrReplace(int key, TValueType* valueType)
+	void AddValueTypeOrReplace(int key, ValueType* valueType)
 	{
 		pair<map<int, ValueType*>::iterator, bool> inserted = valuesMap.insert(pair<int, ValueType*>(key, valueType));
 		if (inserted.second == false) {
@@ -118,16 +116,17 @@ class ComplexMap
 public:
 	~ComplexMap()
 	{
-		for_each(valuesMap.begin(), valuesMap.end(),
-			[](pair<int, ValueType*> value)
-			{
-				delete value.second;
-			});
+		RemoveAll();
+	}
+
+	int GetSize()
+	{
+		return valuesMap.size();
 	}
 
 	void AddValue(int key, TValue value)
 	{
-		AddValueType<SingleValueType>(key, new SingleValueType(value));
+		AddValueType(key, new SingleValueType(value));
 	}
 	void AddArray(int key, TValue* values, int size)
 	{
@@ -213,5 +212,13 @@ public:
 
 		valuesMap.erase(value);
 		return true;
+	}
+	void RemoveAll()
+	{
+		for_each(valuesMap.begin(), valuesMap.end(),
+			[](pair<int, ValueType*> value) {
+				delete value.second;
+			});
+		valuesMap.clear();
 	}
 };
