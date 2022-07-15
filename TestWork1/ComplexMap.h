@@ -11,8 +11,7 @@ class ComplexMap
 	class ValueType
 	{
 	public:
-		virtual ~ValueType()
-		{ }
+		virtual ~ValueType() = 0;
 	};
 
 	class SingleValueType : public ValueType
@@ -52,7 +51,7 @@ class ComplexMap
 	public:
 		char* Line;
 
-		StringValueType(char* line)
+		StringValueType(const char* line)
 		{
 			int length = strlen(line) + 1;
 			Line = new char[length];
@@ -79,7 +78,7 @@ class ComplexMap
 
 	void AddValueTypeOrReplace(int key, ValueType* valueType)
 	{
-		pair<map<int, ValueType*>::iterator, bool> inserted = valuesMap.insert(pair<int, ValueType*>(key, valueType));
+		pair<map<int, ValueType*>::template iterator, bool> inserted = valuesMap.insert(pair<int, ValueType*>(key, valueType));
 		if (inserted.second)
 			return;
 
@@ -90,7 +89,7 @@ class ComplexMap
 	template<typename TValueType>
 	TValueType* GetValueType(int key)
 	{
-		map<int, ValueType*>::iterator value = valuesMap.find(key);
+		map<int, ValueType*>::template iterator value = valuesMap.find(key);
 		if (value == valuesMap.end())
 			throw "Key not found";
 
@@ -104,7 +103,7 @@ class ComplexMap
 	template<typename TValueType>
 	TValueType* GetValueTypeOrNullptr(int key)
 	{
-		map<int, ValueType*>::iterator value = valuesMap.find(key);
+		map<int, ValueType*>::template iterator value = valuesMap.find(key);
 		if (value == valuesMap.end())
 			return nullptr;
 
@@ -134,7 +133,7 @@ public:
 	{
 		AddValueType(key, new ArrayValueType(values, size));
 	}
-	void AddString(int key, char* line)
+	void AddString(int key, const char* line)
 	{
 		AddValueType(key, new StringValueType(line));
 	}
@@ -147,7 +146,7 @@ public:
 	{
 		AddValueTypeOrReplace(key, new ArrayValueType(values, size));
 	}
-	void AddStringOrReplace(int key, char* line)
+	void AddStringOrReplace(int key, const char* line)
 	{
 		AddValueTypeOrReplace(key, new StringValueType(line));
 	}
@@ -200,7 +199,7 @@ public:
 
 	void Remove(int key)
 	{
-		map<int, ValueType*>::iterator value = valuesMap.find(key);
+		map<int, ValueType*>::template iterator value = valuesMap.find(key);
 		if (value == valuesMap.end())
 			throw "Key not found";
 
@@ -208,7 +207,7 @@ public:
 	}
 	bool TryRemove(int key)
 	{
-		map<int, ValueType*>::iterator value = valuesMap.find(key);
+		map<int, ValueType*>::template iterator value = valuesMap.find(key);
 		if (value == valuesMap.end())
 			return false;
 
@@ -224,3 +223,6 @@ public:
 		valuesMap.clear();
 	}
 };
+
+template <typename TValue>
+ComplexMap<TValue>::ValueType::~ValueType() { }

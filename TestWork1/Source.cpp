@@ -52,7 +52,7 @@ void AssertGetArray(ComplexMap<TValue>& complexMap, int key, TValue* expectedArr
 }
 
 template <typename TValue>
-void AssertGetString(ComplexMap<TValue>& complexMap, int key, char* expectedLine)
+void AssertGetString(ComplexMap<TValue>& complexMap, int key, const char* expectedLine)
 {
 	char* line = complexMap.GetString(key);
 
@@ -117,7 +117,7 @@ void AssertTryGetArray(ComplexMap<TValue>& complexMap, int key, bool mustBeFound
 }
 
 template <typename TValue>
-void AssertTryGetString(ComplexMap<TValue>& complexMap, int key, bool mustBeFound, char* expectedLine)
+void AssertTryGetString(ComplexMap<TValue>& complexMap, int key, bool mustBeFound, const char* expectedLine)
 {
 	char* line;
 	bool isFound = complexMap.TryGetString(key, &line);
